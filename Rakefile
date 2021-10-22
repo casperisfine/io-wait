@@ -16,4 +16,7 @@ end
 
 task :test => :compile
 
-task :default => :test
+if RUBY_VERSION >= "3.0"
+  task :default => :test
+end
+task :default

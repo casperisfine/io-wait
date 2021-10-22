@@ -40,6 +40,7 @@
 #define FIONREAD_POSSIBLE_P(fd) ((void)(fd),Qtrue)
 #endif
 
+#ifdef HAVE_RB_IO_WAIT
 /*
  * call-seq:
  *   io.nread -> int
@@ -265,6 +266,7 @@ io_wait(int argc, VALUE *argv, VALUE io)
 
     return io_wait_event(io, events, timeout);
 }
+#endif
 
 /*
  * IO wait methods
@@ -273,6 +275,7 @@ io_wait(int argc, VALUE *argv, VALUE io)
 void
 Init_wait(void)
 {
+#ifdef HAVE_RB_IO_WAIT
 #ifdef HAVE_RB_EXT_RACTOR_SAFE
     RB_EXT_RACTOR_SAFE(true);
 #endif
@@ -285,4 +288,7 @@ Init_wait(void)
     rb_define_method(rb_cIO, "wait_readable", io_wait_readable, -1);
     rb_define_method(rb_cIO, "wait_writable", io_wait_writable, -1);
     rb_define_method(rb_cIO, "wait_priority", io_wait_priority, -1);
+#else
+    rb_raise(rb_eLoadError, "This version should never be loaded");
+#endif
 }
